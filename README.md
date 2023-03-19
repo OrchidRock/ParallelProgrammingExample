@@ -21,6 +21,7 @@ There are some tutorials: [MPI Tutorial](http://1.117.83.246/index.php/archives/
 To compile the code:
 
 `$ cmake -B build`
+
 `$ cd build && make`
 
 To enter the path (`build/src`):
