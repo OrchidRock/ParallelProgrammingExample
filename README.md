@@ -4,7 +4,7 @@ This Project contains two examples for Parallel Programming.
 The first example try to simulate the `N-Body` problem by Numerical Method.
 The second example try to simulate the `TSP` problem.
 
-Exery example includes three implements: `OpenMP`, `MPI` and `CUDA`.
+Every example includes three implements: `OpenMP`, `MPI` and `CUDA`.
 
 The main program uses `GMP` for high precision numerical calculation.
 

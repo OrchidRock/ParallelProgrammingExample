@@ -115,8 +115,7 @@ int main(int argc, char *argv[])
             pstates[j].force = {0, 0};
         }
         for(int j = 0; j < n; j++) {
-            for(int k = j + 1; k < n; k++){
-                
+            for(int k = j+1; k < n; k++){
                 diff = pstates[k].pos - pstates[j].pos; 
                 dist = diff.value();
                 dist_cubed = dist*dist*dist;
@@ -145,7 +144,7 @@ int main(int argc, char *argv[])
         
     }
     
-    // outout
+    // output
     cout << "Final State: " << endl; 
     for(int j = 0; j < n; j++) {
         cout << pstates[j].pos.x << " " << pstates[j].pos.y << " ";
