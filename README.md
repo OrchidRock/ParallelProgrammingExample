@@ -36,6 +36,8 @@ To enter the path (`build/src`):
 
 `$ ./nbody_mpi < ../../3_Body_test.txt`
 
+`$ mpiexec -n 3 --use-hwthread-cpus ./nbody_mpi < ../../3_Body_test.txt`
+
 ### CUDA
 
 
