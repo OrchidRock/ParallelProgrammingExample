@@ -3,12 +3,6 @@
 #include <cmath>
 #include <gmpxx.h>
 
-#ifdef _OPENMP
-#include <omp.h>
-#else
-#warning Do not Support openmp
-#endif
-
 using namespace std;
 
 #define ll long int
@@ -88,13 +82,7 @@ int main(int argc, char *argv[])
     
     vector<mpf_class> masses(n, 0); // the mass of particle.
     vector<ParticleState> pstates(n);
-
-#ifdef _OPENMP
-    vector<omp_lock_t> locks(n);
-    for(int i=0; i<n; i++) {
-        omp_init_lock(&locks[i]);
-    }
-#endif
+    
 
     for(int i = 0 ; i < n; i++) {
         cin >> para;
@@ -120,47 +108,26 @@ int main(int argc, char *argv[])
     Vector diff(0,0);
     Vector force_jk(0,0);
 
-    #pragma omp parallel num_threads(n)
     for(int i = 0; i < T; i++) {
 
         // Compute total force to each particle j.
-        #pragma omp for
         for(int j = 0; j < n; j++) {
             pstates[j].force = {0, 0};
         }
-
-        #pragma omp for private(diff, dist, dist_cubed, force_jk) schedule(dynamic)
         for(int j = 0; j < n; j++) {
-            for(int k = j + 1; k < n; k++){
-                
-                //cout << "j: "<<j  << " k: " << k << endl; 
+            for(int k = j+1; k < n; k++){
                 diff = pstates[k].pos - pstates[j].pos; 
                 dist = diff.value();
                 dist_cubed = dist*dist*dist;
                 force_jk = diff * ((G * masses[j] * masses[k]) / dist_cubed);
                 
                 // Use Newton's  third law of motion.
-
-#ifdef _OPENMP
-                omp_set_lock(&locks[j]);
                 pstates[j].force += force_jk;
-                omp_unset_lock(&locks[j]);
-
-                omp_set_lock(&locks[k]);
-                pstates[k].force -= force_jk;
-                omp_unset_lock(&locks[k]);
-#else
-                #pragma omp critical
-                {
-                    pstates[j].force += force_jk;
-                    pstates[k].force -= force_jk; 
-                }
-#endif
-
+                pstates[k].force -= force_jk; 
             }
         }
         
-       /* 
+        /* 
         cout << "Force: " << endl;
         for(int j = 0; j < n; j++) {
             cout << pstates[j].force.x << " " << pstates[j].force.y << "\n";
@@ -170,7 +137,6 @@ int main(int argc, char *argv[])
 
         // Compute position and velocity of each particle j.
         // Euler's Method
-        #pragma omp for
         for(int j = 0; j < n; j++) {
             pstates[j].pos += pstates[j].vel * delta_t;
             pstates[j].vel += pstates[j].force * (delta_t / masses[j]);
@@ -178,18 +144,13 @@ int main(int argc, char *argv[])
         
     }
     
-    // outout
+    // output
     cout << "Final State: " << endl; 
     for(int j = 0; j < n; j++) {
         cout << pstates[j].pos.x << " " << pstates[j].pos.y << " ";
         cout << pstates[j].vel.x << " " << pstates[j].vel.y << "\n";
     }
-    cout << endl;
-
-#ifdef _OPENMP
-    for(int i=0; i<n; i++) {
-        omp_destroy_lock(&locks[i]);
-    }
-#endif
+    cout << endl;    
+    
     return 0;
 }

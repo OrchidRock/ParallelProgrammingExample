@@ -1,8 +1,10 @@
-cmake_minimum_required(VERSION 3.5.1)
-project(nbody VERSION 1.0)
+cmake_minimum_required(VERSION 3.9)
+project(nbody VERSION 1.0 LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 find_package(MPI REQUIRED)
+find_package(OpenMP REQUIRED)
 #message(STATUS "${MPI_CXX_INCLUDE_DIRS} ${MPI_CXX_LIBRARIES} ${MPI_CXX_COMPILE_OPTIONS}")
+#message(STATUS "${OpenMP_CXX_INCLUDE_DIRS} ${OpenMP_CXX_LIBRARIES} ${OpenMP_CXX_FLAGS}")
 add_subdirectory(src)
